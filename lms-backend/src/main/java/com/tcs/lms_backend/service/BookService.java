@@ -25,4 +25,12 @@ public class BookService {
     public List<Book> getBooks() {
         return bookRepository.findAll();
     }
+
+    public Book getBook(int bookID) {
+        Optional<Book> book = bookRepository.findById(bookID);
+        if (book.isEmpty()) {
+            throw new RuntimeException("There is no book with id: " + bookID +" present in db.");
+        }
+        return book.get();
+    }
 }

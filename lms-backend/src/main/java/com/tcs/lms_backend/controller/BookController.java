@@ -31,4 +31,12 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("fetched all books successfully", books));
     }
+
+    @GetMapping("getBook/{bookID}")
+    public ResponseEntity<ApiResponse<Book>> getBook(@PathVariable int bookID) {
+        Book book = bookService.getBook(bookID);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("fetched book successfully", book));
+
+    }
 }
