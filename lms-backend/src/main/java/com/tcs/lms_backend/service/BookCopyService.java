@@ -1,5 +1,7 @@
 package com.tcs.lms_backend.service;
 
+import com.tcs.lms_backend.dto.response.BookCopyCreateResponse;
+import com.tcs.lms_backend.dto.response.BookCopyResponse;
 import com.tcs.lms_backend.dto.response.IssueResponse;
 import com.tcs.lms_backend.enums.BookStatus;
 import com.tcs.lms_backend.enums.TransactionStatus;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,7 +39,7 @@ public class BookCopyService {
     IssueTransactionRepository issueTransactionRepository;
 
     @Transactional
-    public BookCopy addCopy(int bookId, BookCopy bookCopy) {
+    public BookCopyCreateResponse addCopy(int bookId, BookCopy bookCopy) {
 
         Book book = bookService.getBook(bookId);
 
@@ -46,11 +49,17 @@ public class BookCopyService {
             bookCopy.setStatus(BookStatus.AVAILABLE);
         }
 
-        return bookCopyRepository.save(bookCopy);
+        return bookCopyCreateMapper(bookCopyRepository.save(bookCopy));
     }
 
-    public List<BookCopy> getBookCopies(int bookId) {
-        return bookCopyRepository.findByBookBookID(bookId);
+    public List<BookCopyResponse> getBookCopies(int bookId) {
+        List<BookCopyResponse> bookCopyResponses = new ArrayList<>();
+        List<BookCopy> bookCopies = bookCopyRepository.findByBookBookID(bookId);
+
+        for (BookCopy bookCopy : bookCopies) {
+            bookCopyResponses.add(bookCopyMapper(bookCopy));
+        }
+        return bookCopyResponses;
     }
 
     public Long getBookCopyCount(int id) {
@@ -92,4 +101,36 @@ public class BookCopyService {
 
         return res;
     }
+
+    public BookCopyResponse bookCopyMapper(BookCopy copy) {
+        BookCopyResponse res = new BookCopyResponse();
+
+        res.setBookCopyId(copy.getBookCopyID());
+        res.setBookId(copy.getBook().getBookID());
+        res.setBookName(copy.getBook().getBookName());
+        res.setStatus(copy.getStatus().name());
+        res.setIssued(copy.getIssued());
+        res.setIssuedAt(copy.getIssuedAt());
+
+        if (copy.getIssuedTo() != null) {
+            res.setMemberId(copy.getIssuedTo().getMemberID());
+            res.setMemberName(copy.getIssuedTo().getName());
+        }
+
+        return res;
+    }
+    public BookCopyCreateResponse bookCopyCreateMapper(BookCopy copy) {
+        BookCopyCreateResponse res = new BookCopyCreateResponse();
+
+        res.setBookCopyId(copy.getBookCopyID());
+        res.setBookId(copy.getBook().getBookID());
+        res.setBookName(copy.getBook().getBookName());
+        res.setStatus(copy.getStatus().name());
+        res.setIssued(copy.getIssued());
+        res.setCreatedAt(copy.getCreatedAt());
+
+        return res;
+    }
 }
+
+
