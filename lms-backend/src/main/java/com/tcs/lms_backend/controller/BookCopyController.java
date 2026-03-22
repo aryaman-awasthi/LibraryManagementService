@@ -32,4 +32,10 @@ public class BookCopyController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("fetched all book copies", bookCopies));
     }
+
+    @GetMapping("book_copies/count/{id}")
+    public ResponseEntity<ApiResponse<Long>> getBookCopyCount(@PathVariable int id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("success", bookCopyService.getBookCopyCount(id)));
+    }
 }

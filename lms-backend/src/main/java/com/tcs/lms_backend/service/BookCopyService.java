@@ -39,4 +39,8 @@ public class BookCopyService {
     public List<BookCopy> getBookCopies(int bookId) {
         return bookCopyRepository.findByBookBookID(bookId);
     }
+
+    public Long getBookCopyCount(int id) {
+        return bookCopyRepository.countByBookBookID(id);
+    }
 }
