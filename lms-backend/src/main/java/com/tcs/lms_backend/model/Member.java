@@ -17,7 +17,7 @@ import java.util.UUID;
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID memberID;
+    private Integer memberID;
 
     @Column(nullable = false)
     private String name;
@@ -25,13 +25,11 @@ public class Member {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-
-    // Optional: Reference to all books currently issued to this member
+    
     @OneToMany(mappedBy = "issuedTo")
     private List<BookCopy> borrowedCopies;
 
-    // Optional: History of all transactions for this member
+    
     @OneToMany(mappedBy = "member")
     private List<IssueTransaction> transactions;
-
 }
