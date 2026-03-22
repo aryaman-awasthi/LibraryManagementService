@@ -1,5 +1,6 @@
 package com.tcs.lms_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,11 +26,12 @@ public class Member {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
-    
+
+    @JsonIgnore
     @OneToMany(mappedBy = "issuedTo")
     private List<BookCopy> borrowedCopies;
 
-    
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<IssueTransaction> transactions;
 }

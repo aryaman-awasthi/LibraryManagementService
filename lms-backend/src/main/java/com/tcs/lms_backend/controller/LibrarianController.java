@@ -1,8 +1,12 @@
 package com.tcs.lms_backend.controller;
 
+import com.tcs.lms_backend.dto.request.IssueRequest;
 import com.tcs.lms_backend.dto.response.ApiResponse;
+import com.tcs.lms_backend.dto.response.IssueResponse;
 import com.tcs.lms_backend.dto.response.MemberWrapper;
+import com.tcs.lms_backend.model.IssueTransaction;
 import com.tcs.lms_backend.model.Member;
+import com.tcs.lms_backend.service.BookCopyService;
 import com.tcs.lms_backend.service.LibrarianService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,9 @@ public class LibrarianController {
 
     @Autowired
     LibrarianService librarianService;
+
+    @Autowired
+    BookCopyService bookCopyService;
 
     @PostMapping("member/create")
     public ResponseEntity<ApiResponse<Member>> createMember(@RequestBody Member member) {
@@ -38,5 +45,11 @@ public class LibrarianController {
     @DeleteMapping("member/delete/{id}")
     public ResponseEntity<ApiResponse<Boolean>> deleteMember(@PathVariable int id) {
         return ResponseEntity.ok(ApiResponse.success("deleted", librarianService.deleteMember(id)));
+    }
+
+    @PostMapping("issue")
+    public ResponseEntity<ApiResponse<IssueResponse>> issue (@RequestBody IssueRequest issueRequest) {
+        IssueResponse issueTransaction = bookCopyService.issueBook(issueRequest.getMemberID(), issueRequest.getBookCopyID());
+        return ResponseEntity.ok(ApiResponse.success("issued", issueTransaction));
     }
 }

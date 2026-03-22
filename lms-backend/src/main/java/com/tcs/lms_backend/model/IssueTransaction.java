@@ -1,5 +1,6 @@
 package com.tcs.lms_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tcs.lms_backend.enums.TransactionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import java.util.UUID;
 public class IssueTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID issueID;
+    private int issueID;
 
     // FOREIGN KEY 1: Link to the specific Book Copy
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,8 +41,7 @@ public class IssueTransaction {
     @Column(length = 50)
     private TransactionStatus status; // 'issued', 'returned'
 
-    // Link to Fine (One-to-One relationship)
-    // mappedBy refers to the field name in the Fine entity
+    @JsonIgnore
     @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
     private Fine fine;
 }

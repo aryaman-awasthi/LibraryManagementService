@@ -1,5 +1,6 @@
 package com.tcs.lms_backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tcs.lms_backend.enums.BookStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,7 +32,6 @@ public class BookCopy {
 
     private Boolean issued = false;
 
-    // FOREIGN KEY 2: Link to the Member
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "issued_to") // This is nullable in your SQL
     private Member issuedTo;
