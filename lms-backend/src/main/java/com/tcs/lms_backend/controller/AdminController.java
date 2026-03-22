@@ -1,5 +1,6 @@
 package com.tcs.lms_backend.controller;
 
+import com.tcs.lms_backend.dto.request.LoginReq;
 import com.tcs.lms_backend.dto.request.StaffReq;
 import com.tcs.lms_backend.dto.request.UpdateReq;
 import com.tcs.lms_backend.dto.response.ApiResponse;
@@ -40,13 +41,6 @@ public class AdminController {
                 .body(ApiResponse.success("Success", staffResponse));
     }
 
-    @GetMapping("getPassword/{staff_id}")
-    public ResponseEntity<ApiResponse<String>> getPassword (@PathVariable int staff_id) {
-        String password = adminService.getPassword(staff_id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponse.success("Success", password));
-    }
-
     @DeleteMapping("delete/{staff_id}")
     public ResponseEntity<ApiResponse<String>> deleteStaff(@PathVariable int staff_id) {
         String res = adminService.deleteStaff(staff_id);
@@ -59,5 +53,12 @@ public class AdminController {
         StaffResponse staffResponse = adminService.updateActivity(staff_id, updateReq);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(ApiResponse.success("Success", staffResponse));
+    }
+
+    @PostMapping("login")
+    public ResponseEntity<ApiResponse<StaffResponse>> login (@RequestBody LoginReq loginReq) {
+        StaffResponse staffResponse = adminService.login(loginReq);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("logged in", staffResponse));
     }
 }
