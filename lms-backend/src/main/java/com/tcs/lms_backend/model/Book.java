@@ -16,9 +16,8 @@ import java.util.UUID;
 @Data
 public class Book {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
-    private UUID bookID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer bookID;
 
     @Column(name = "book_name", nullable = false)
     private String bookName;

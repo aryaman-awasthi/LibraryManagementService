@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -15,9 +16,8 @@ import java.util.UUID;
 @Data
 public class Fine {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
-    private UUID fineId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer fineId;
 
     // FOREIGN KEY: Link to the specific transaction
     // This matches: CONSTRAINT fk_issue FOREIGN KEY(issue_id) REFERENCES issue_transactions(id)
@@ -26,7 +26,7 @@ public class Fine {
     private IssueTransaction transaction;
 
     // Matches DOUBLE PRECISION in SQL
-    @Column(precision = 10, scale = 2)
+    @Column
     private Double amount;
 
     @CreationTimestamp

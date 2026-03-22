@@ -16,8 +16,7 @@ import java.util.UUID;
 @Entity
 public class Member {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID memberID;
 
     @Column(nullable = false)

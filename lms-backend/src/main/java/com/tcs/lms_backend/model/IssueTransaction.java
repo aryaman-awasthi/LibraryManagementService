@@ -16,8 +16,7 @@ import java.util.UUID;
 @Entity
 public class IssueTransaction {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID issueID;
 
     // FOREIGN KEY 1: Link to the specific Book Copy

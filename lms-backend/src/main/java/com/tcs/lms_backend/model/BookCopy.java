@@ -16,9 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class BookCopy {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "UUID", updatable = false, nullable = false)
-    private UUID bookCopyID;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer bookCopyID;
 
     // FOREIGN KEY 1: Link to the Book (The Parent)
     @ManyToOne(fetch = FetchType.LAZY)
