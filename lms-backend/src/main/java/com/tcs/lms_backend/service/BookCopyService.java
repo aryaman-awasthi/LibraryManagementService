@@ -5,19 +5,14 @@ import com.tcs.lms_backend.dto.response.BookCopyResponse;
 import com.tcs.lms_backend.dto.response.IssueResponse;
 import com.tcs.lms_backend.enums.BookStatus;
 import com.tcs.lms_backend.enums.TransactionStatus;
-import com.tcs.lms_backend.model.Book;
-import com.tcs.lms_backend.model.BookCopy;
-import com.tcs.lms_backend.model.IssueTransaction;
-import com.tcs.lms_backend.model.Member;
-import com.tcs.lms_backend.repository.BookCopyRepository;
-import com.tcs.lms_backend.repository.BookRepository;
-import com.tcs.lms_backend.repository.IssueTransactionRepository;
-import com.tcs.lms_backend.repository.MemberRepository;
+import com.tcs.lms_backend.model.*;
+import com.tcs.lms_backend.repository.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +32,9 @@ public class BookCopyService {
 
     @Autowired
     IssueTransactionRepository issueTransactionRepository;
+
+    @Autowired
+    FineRepository fineRepository;
 
     @Transactional
     public BookCopyCreateResponse addCopy(int bookId, BookCopy bookCopy) {
@@ -130,6 +128,55 @@ public class BookCopyService {
         res.setCreatedAt(copy.getCreatedAt());
 
         return res;
+    }
+
+    @Transactional
+    public IssueResponse returnBook(int bookCopyId) {
+        BookCopy bookCopy = bookCopyRepository.findById(bookCopyId)
+                .orElseThrow(() -> new RuntimeException("Book copy not found"));
+
+        if (!bookCopy.getIssued()) {
+            throw new RuntimeException("Book is not currently issued");
+        }
+
+        IssueTransaction txn = issueTransactionRepository.findTopByBookCopyAndStatusOrderByIssuedAtDesc(bookCopy, TransactionStatus.issued)
+                .orElseThrow(() -> new RuntimeException("Active transaction not found"));
+
+        txn.setReturnedAt(LocalDateTime.now());
+        txn.setStatus(TransactionStatus.returned);
+
+        bookCopy.setIssuedTo(null);
+        bookCopy.setIssued(false);
+        bookCopy.setIssuedAt(null);
+
+        return mapToResponse(txn);
+    }
+
+    @Transactional
+    public double fine(int bookCopyId) {
+        BookCopy bookCopy = bookCopyRepository.findById(bookCopyId)
+                .orElseThrow(() -> new RuntimeException("Book copy not found"));
+
+        IssueTransaction transaction = issueTransactionRepository.findTopByBookCopyAndStatusOrderByIssuedAtDesc(bookCopy, TransactionStatus.returned)
+                .orElseThrow(() -> new RuntimeException("Active transaction not found"));
+
+        if (transaction.getFine() != null) {
+            return transaction.getFine().getAmount();
+        }
+        long days = ChronoUnit.DAYS.between(transaction.getIssuedAt(), transaction.getReturnedAt());
+        double amount = 0;
+        long threshold = 0;
+        if (days > -1) // for testing
+        {
+            amount = (days - threshold) * 10;
+        }
+        Fine fine = new Fine();
+        fine.setTransaction(transaction);
+        fine.setAmount(amount);
+        fine.setPaid(false);
+
+        fineRepository.save(fine);
+        return amount;
     }
 }
 

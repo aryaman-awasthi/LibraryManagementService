@@ -52,4 +52,17 @@ public class LibrarianController {
         IssueResponse issueTransaction = bookCopyService.issueBook(issueRequest.getMemberID(), issueRequest.getBookCopyID());
         return ResponseEntity.ok(ApiResponse.success("issued", issueTransaction));
     }
+
+    @PostMapping("return/{id}")
+    public ResponseEntity<ApiResponse<IssueResponse>> bookReturn(@PathVariable int id) {
+        IssueResponse issueResponse = bookCopyService.returnBook(id);
+        return ResponseEntity.ok(ApiResponse.success("returned", issueResponse));
+    }
+
+    @GetMapping("calculateFine/{id}")
+    public ResponseEntity<ApiResponse<Double>> getFine(@PathVariable int id) {
+        double fine = bookCopyService.fine(id);
+        return ResponseEntity.ok(ApiResponse.success("fine calculated", fine));
+    }
+
 }
