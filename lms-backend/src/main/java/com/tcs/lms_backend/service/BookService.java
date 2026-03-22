@@ -33,4 +33,9 @@ public class BookService {
         }
         return book.get();
     }
+
+    public String deleteBook(int bookID) {
+        bookRepository.delete(getBook(bookID));
+        return "deleted";
+    }
 }

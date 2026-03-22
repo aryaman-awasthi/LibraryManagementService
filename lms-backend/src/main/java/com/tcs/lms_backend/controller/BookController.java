@@ -39,4 +39,13 @@ public class BookController {
                 .body(ApiResponse.success("fetched book successfully", book));
 
     }
+
+    @DeleteMapping("delete/{bookID}")
+    public ResponseEntity<ApiResponse<String>> deleteBook(@PathVariable int bookID) {
+        String res = bookService.deleteBook(bookID);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.success("Successfully deleted", res));
+
+    }
 }
