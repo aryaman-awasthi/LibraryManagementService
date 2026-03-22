@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface StaffRepository extends JpaRepository<Staff, Integer> {
+public interface AdminRepository extends JpaRepository<Staff, Integer> {
 
     // @Query(value = "SELECT * FROM question q WHERE q.category=:category ORDER BY RANDOM() LIMIT :questions", nativeQuery = true)
     //    List<Question> getRandomQuestionByCategory(String category, int questions);
