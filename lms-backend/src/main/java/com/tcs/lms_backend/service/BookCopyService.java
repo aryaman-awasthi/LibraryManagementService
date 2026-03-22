@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class BookCopyService {
     @Autowired
@@ -34,4 +36,7 @@ public class BookCopyService {
         return bookCopyRepository.save(bookCopy);
     }
 
+    public List<BookCopy> getBookCopies(int bookId) {
+        return bookCopyRepository.findByBookBookID(bookId);
+    }
 }
